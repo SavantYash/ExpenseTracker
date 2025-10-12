@@ -1,0 +1,115 @@
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f6f8f7",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  iconText: {
+    fontSize: 24,
+  },
+  sectionTitle: {
+    marginTop: 24,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  expenseCircleContainer: {
+    marginTop: 16,
+    marginBottom: 24,
+    alignItems: "center",
+  },
+  circle: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    borderWidth: 2,
+    borderColor: "#11d49333",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  filledCircle: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    borderWidth: 2,
+    borderColor: "#11d493",
+    position: "absolute",
+    transform: [{ rotate: "-90deg" }],
+    display: "flex",
+  },
+  expenseCircleText: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    height:'100%'
+  },
+  smallText: { fontSize: 12, color: "#555" },
+  largeText: { fontSize: 24, fontWeight: "bold", marginTop: 4 },
+
+  categoryItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  categoryIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#11d49322",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  categoryTitle: { fontWeight: "600" },
+  categorySubtitle: { fontSize: 12, color: "#555" },
+  categoryAmount: { fontWeight: "bold", fontSize: 16 },
+
+  recentItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  recentTitle: { fontWeight: "500" },
+  recentSubtitle: { fontSize: 12, color: "#555" },
+  recentAmount: { fontSize: 14, fontWeight: "500" },
+
+  fabContainer: {
+    position: "absolute",
+    bottom: 24,
+    right: 24,
+  },
+  fabButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    backgroundColor: "#11d493",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 5,
+  },
+});
