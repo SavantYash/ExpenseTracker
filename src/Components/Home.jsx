@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
-} from "react-native";
-import { styles } from "./Styles.js"; // 👈 external style import
+} from 'react-native';
+import { styles } from './Styles.js'; // 👈 external style import
 
 function ExpenseCircle() {
   return (
@@ -47,8 +47,23 @@ function RecentExpenseItem({ name, type, amount }) {
       </View>
       <Text style={styles.recentAmount}>-{amount}</Text>
     </View>
-  );  
+  );
 }
+
+const categories = [
+  { id: '1', name: 'Food', expense: 450, limit: 500 },
+  { id: '2', name: 'Rent', expense: 1000, limit: 1000 },
+  { id: '3', name: 'Transport', expense: 300, limit: 400 },
+  { id: '4', name: 'Shopping', expense: 200, limit: 300 },
+];
+
+const renderItem = ({ item }) => (
+  <View style={styles.card}>
+    <Text style={styles.name}>{item.name}</Text>
+    <Text style={styles.expense}>Spent: ${item.expense}</Text>
+    <Text style={styles.limit}>Limit: ${item.limit}</Text>
+  </View>
+);
 
 const TransactionSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
@@ -62,7 +77,7 @@ const TransactionSchema = Yup.object().shape({
 export default function Test123() {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleSave = (values) => {
+  const handleSave = values => {
     console.log('Transaction Saved:line 66 in Home.jsx', values);
     setModalVisible(false);
   };
@@ -72,7 +87,7 @@ export default function Test123() {
       <View style={styles.header}>
         <View style={{ width: 48 }} />
         <Text style={styles.headerTitle}>Home</Text>
-        <TouchableOpacity style={{ width: 48, alignItems: "center" }}>
+        <TouchableOpacity style={{ width: 48, alignItems: 'center' }}>
           <Text style={styles.iconText}>⚙️</Text>
         </TouchableOpacity>
       </View>
@@ -88,6 +103,16 @@ export default function Test123() {
         <CategoryItem icon="🚗" title="Transportation" spent="200" />
         <CategoryItem icon="🎬" title="Entertainment" spent="150" />
 
+        {/* for rander the category  */}
+        <View style={styles.container}>
+          <FlatList
+            data={categories}
+            keyExtractor={item => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        </View>
+
         {/* Recent Expenses */}
         <Text style={styles.sectionTitle}>Recent Expenses</Text>
         <RecentExpenseItem name="Fresh Market" type="Grocery" amount="50" />
@@ -102,11 +127,11 @@ export default function Test123() {
       {/* Floating Add Button */}
       <View style={styles.fabContainer}>
         <TouchableOpacity style={styles.fabButton}>
-          <Text style={styles.iconText} onPress={()=>setModalVisible(true)}>➕</Text>
+          <Text style={styles.iconText} onPress={() => setModalVisible(true)}>
+            ➕
+          </Text>
         </TouchableOpacity>
       </View>
-
-
 
       <Modal
         visible={modalVisible}
@@ -175,3 +200,28 @@ export default function Test123() {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f0f4f7', padding: 10 },
+  card: {
+    backgroundColor: '#fff',
+    padding: 15,
+    marginVertical: 8,
+    borderRadius: 10,
+    elevation: 2,
+  },
+  name: { fontSize: 16, fontWeight: '600', marginBottom: 5 },
+  expense: { fontSize: 14, color: '#e63946' },
+  limit: { fontSize: 14, color: '#457b9d' },
+});
+
+// export interface Budget {
+//   id: string;
+//   userId: string;
+//   categoryId: string;
+//   limit: number;          // monthly budget
+//   period: 'monthly' | 'weekly';
+//   startDate: Date;
+//   endDate: Date;
+//   createdAt: Date;
+//   updatedAt: Date;
+// }

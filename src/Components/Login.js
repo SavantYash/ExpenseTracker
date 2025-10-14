@@ -151,7 +151,7 @@ export default function LoginScreen({ navigation }) {
       </Formik>
 
       <TouchableOpacity>
-        <Text style={styles.forgot}>Forgot Password?</Text>
+        <Text style={styles.forgot} onPress={()=>navigation.navigate('login')}>Forgot Password?</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
   );

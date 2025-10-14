@@ -28,21 +28,34 @@ import { useNavigation } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/Components/Login.js';
+import RegisterScreen from './src/Components/RegisterScreen.js';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+  const base = 'login';
 
   useEffect(() => {
     if (app) {
       console.log('Success!');
+      checkUserLoggedIn()
     } else {
       console.log('still work to do!');
     }
   }, []);
 
   const navigation = useNavigation();
+
+  const checkUserLoggedIn = async () => {
+    try {
+      let user = await AsyncStorage.getItem('user');
+      if (!user) base = 'home';
+      else return;
+    } catch (err) {
+      console.log('from App.js 52 while checking user on storage');
+    }
+  };
 
   return (
     // <>
@@ -54,8 +67,20 @@ function App() {
     // </>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="login">
-        <Stack.Screen name="login" component={LoginScreen} navigation={navigation} />
-        <Stack.Screen name="home" component={Test123}  />
+        <Stack.Screen
+          name="login"
+          component={LoginScreen}
+          navigation={navigation}
+        />
+        <Stack.Screen
+          name="register"
+          component={RegisterScreen}
+          navigation={navigation}
+        />
+        {/* After login, navigate to Bottom Tabs */}
+        <Stack.Screen name="home" component={AppTabs} />
+
+
         {/* <Stack.Screen name="AddExpense" component={AddExpenseScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>
