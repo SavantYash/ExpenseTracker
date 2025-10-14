@@ -6,7 +6,13 @@
  */
 
 import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -14,47 +20,45 @@ import {
 import Test123 from './src/Components/Home';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// firebase 
-import { app, auth } from "./src/config/firebase.js"
-import { signInWithEmailAndPassword } from "firebase/auth";
+// firebase
+import { app, auth } from './src/config/firebase.js';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './src/Components/Login.js';
+
+const Stack = createNativeStackNavigator();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   useEffect(() => {
     if (app) {
-      console.log("Success!")
-      authTest()
+      console.log('Success!');
     } else {
-      console.log("still work to do!")
+      console.log('still work to do!');
     }
-  }, [])
+  }, []);
 
-  const authTest = async () => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, "test123@gmail.com", "Test@123");
-      const user = userCredential.user
-      await AsyncStorage.setItem('user', JSON.stringify({
-      uid: user.uid,
-      email: user.email,
-    }));
-      console.log("user logged in!", userCredential)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
+  const navigation = useNavigation();
 
   return (
-    <>
-      <SafeAreaProvider>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        {/* <AppContent /> */}
-        <Test123 />
-      </SafeAreaProvider>
-    </>
-
+    // <>
+    //   <SafeAreaProvider>
+    //     <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+    //     {/* <AppContent /> */}
+    //     <Test123 />
+    //   </SafeAreaProvider>
+    // </>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="login">
+        <Stack.Screen name="login" component={LoginScreen} navigation={navigation} />
+        <Stack.Screen name="home" component={Test123}  />
+        {/* <Stack.Screen name="AddExpense" component={AddExpenseScreen} /> */}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -67,7 +71,6 @@ function App() {
 //     </View>
 //   )
 // }
-
 
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
