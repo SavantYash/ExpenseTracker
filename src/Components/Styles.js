@@ -112,4 +112,60 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 20,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginBottom: 15,
+  },
+  typeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  typeButton: {
+    flex: 1,
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    alignItems: 'center',
+  },
+  typeSelected: {
+    backgroundColor: '#4a90e2',
+    borderColor: '#4a90e2',
+  },
+  typeText: {
+    color: '#000',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  modalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginLeft: 10,
+  },
 });

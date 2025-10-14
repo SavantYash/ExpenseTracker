@@ -47,10 +47,25 @@ function RecentExpenseItem({ name, type, amount }) {
       </View>
       <Text style={styles.recentAmount}>-{amount}</Text>
     </View>
-  );
+  );  
 }
 
+const TransactionSchema = Yup.object().shape({
+  title: Yup.string().required('Title is required'),
+  amount: Yup.number()
+    .typeError('Amount must be a number')
+    .positive('Amount must be positive')
+    .required('Amount is required'),
+  type: Yup.string().oneOf(['income', 'expense']).required(),
+});
+
 export default function Test123() {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleSave = (values) => {
+    console.log('Transaction Saved:line 66 in Home.jsx', values);
+    setModalVisible(false);
+  };
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -87,9 +102,76 @@ export default function Test123() {
       {/* Floating Add Button */}
       <View style={styles.fabContainer}>
         <TouchableOpacity style={styles.fabButton}>
-          <Text style={styles.iconText}>➕</Text>
+          <Text style={styles.iconText} onPress={()=>setModalVisible(true)}>➕</Text>
         </TouchableOpacity>
       </View>
+
+
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Add Transaction</Text>
+
+            <TextInput
+              placeholder="Title"
+              value={title}
+              onChangeText={setTitle}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Amount"
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="numeric"
+              style={styles.input}
+            />
+
+            {/* Type selection */}
+            <View style={styles.typeContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  type === 'income' && styles.typeSelected,
+                ]}
+                onPress={() => setType('income')}
+              >
+                <Text style={styles.typeText}>Income</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  type === 'expense' && styles.typeSelected,
+                ]}
+                onPress={() => setType('expense')}
+              >
+                <Text style={styles.typeText}>Expense</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Buttons */}
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: '#ccc' }]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: '#4a90e2' }]}
+                onPress={handleSave}
+              >
+                <Text style={{ color: '#fff' }}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
