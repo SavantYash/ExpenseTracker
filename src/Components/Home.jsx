@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
+  StyleSheet,
   SafeAreaView,
+  FlatList,
+  Modal,
+  TextInput,
 } from 'react-native';
 import { styles } from './Styles.js'; // 👈 external style import
 
@@ -58,21 +62,21 @@ const categories = [
 ];
 
 const renderItem = ({ item }) => (
-  <View style={styles.card}>
-    <Text style={styles.name}>{item.name}</Text>
-    <Text style={styles.expense}>Spent: ${item.expense}</Text>
-    <Text style={styles.limit}>Limit: ${item.limit}</Text>
+  <View style={styles1.card}>
+    <Text style={styles1.name}>{item.name}</Text>
+    <Text style={styles1.expense}>Spent: ${item.expense}</Text>
+    <Text style={styles1.limit}>Limit: ${item.limit}</Text>
   </View>
 );
 
-const TransactionSchema = Yup.object().shape({
-  title: Yup.string().required('Title is required'),
-  amount: Yup.number()
-    .typeError('Amount must be a number')
-    .positive('Amount must be positive')
-    .required('Amount is required'),
-  type: Yup.string().oneOf(['income', 'expense']).required(),
-});
+// const TransactionSchema = Yup.object().shape({
+//   title: Yup.string().required('Title is required'),
+//   amount: Yup.number()
+//     .typeError('Amount must be a number')
+//     .positive('Amount must be positive')
+//     .required('Amount is required'),
+//   type: Yup.string().oneOf(['income', 'expense']).required(),
+// });
 
 export default function Test123() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -104,7 +108,7 @@ export default function Test123() {
         <CategoryItem icon="🎬" title="Entertainment" spent="150" />
 
         {/* for rander the category  */}
-        <View style={styles.container}>
+        <View style={styles1.container}>
           <FlatList
             data={categories}
             keyExtractor={item => item.id}
@@ -133,7 +137,7 @@ export default function Test123() {
         </TouchableOpacity>
       </View>
 
-      <Modal
+      {/* <Modal
         visible={modalVisible}
         animationType="slide"
         transparent={true}
@@ -157,7 +161,7 @@ export default function Test123() {
               style={styles.input}
             />
 
-            {/* Type selection */}
+          
             <View style={styles.typeContainer}>
               <TouchableOpacity
                 style={[
@@ -179,7 +183,6 @@ export default function Test123() {
               </TouchableOpacity>
             </View>
 
-            {/* Buttons */}
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={[styles.modalButton, { backgroundColor: '#ccc' }]}
@@ -196,11 +199,11 @@ export default function Test123() {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </View>
   );
 }
-const styles = StyleSheet.create({
+const styles1 = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f7', padding: 10 },
   card: {
     backgroundColor: '#fff',

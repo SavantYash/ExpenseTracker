@@ -5,8 +5,10 @@
  * @format
  */
 
+import React from 'react'
 import { NewAppScreen } from '@react-native/new-app-screen';
 import {
+  ActivityIndicator,
   StatusBar,
   StyleSheet,
   Text,
@@ -17,45 +19,74 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import Test123 from './src/Components/Home';
+// import Test123 from './src/Components/Home';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // firebase
 import { app, auth } from './src/config/firebase.js';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/Components/Login.js';
 import RegisterScreen from './src/Components/RegisterScreen.js';
+import AppTabs from './src/Components/AppTabs.js';
+import Toast from 'react-native-toast-message';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const base = 'login';
+  const [base, setbase] = useState('home')
 
   useEffect(() => {
     if (app) {
       console.log('Success!');
-      checkUserLoggedIn()
     } else {
       console.log('still work to do!');
     }
   }, []);
 
-  const navigation = useNavigation();
+  // if (!base) {
+  //   // still loading
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  //       <ActivityIndicator size="large" />
+  //     </View>
+  //   );
+  // }
 
-  const checkUserLoggedIn = async () => {
-    try {
-      let user = await AsyncStorage.getItem('user');
-      if (!user) base = 'home';
-      else return;
-    } catch (err) {
-      console.log('from App.js 52 while checking user on storage');
-    }
-  };
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        console.log(user)
+        if (user) {
+          setbase('home');
+        } else {
+          setbase('login');
+        }
+      } catch (err) {
+        console.error('Failed to load user from storage', err);
+        setbase('login');
+      }
+    };
+
+    checkLogin();
+  }, []);
+
+  // const checkUserLoggedIn = async () => {
+  //   try {
+  //     let user = await AsyncStorage.getItem('user');
+  //     if (user) setbase("home");
+  //     else setbase("login");
+  //     console.log(base)
+  //   } catch (err) {
+  //     setbase("login")
+  //     console.log('from App.js 52 while checking user on storage', err);
+  //   }
+  // };
 
   return (
     // <>
@@ -65,57 +96,56 @@ function App() {
     //     <Test123 />
     //   </SafeAreaProvider>
     // </>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="login">
-        <Stack.Screen
-          name="login"
-          component={LoginScreen}
-          navigation={navigation}
-        />
-        <Stack.Screen
+    <>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName={base}>
+          <Stack.Screen
+            name="login"
+            component={LoginScreen}
+          />
+          {/* <Stack.Screen
           name="register"
           component={RegisterScreen}
-          navigation={navigation}
-        />
-        {/* After login, navigate to Bottom Tabs */}
-        <Stack.Screen name="home" component={AppTabs} />
+          /> */}
+          <Stack.Screen name="home" component={AppTabs} />
 
 
-        {/* <Stack.Screen name="AddExpense" component={AddExpenseScreen} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
+          {/* <Stack.Screen name="AddExpense" component={AddExpenseScreen} /> */}
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast />
+    </>
   );
 }
 
-// import React from 'react'
 
-// function Test123() {
+function Test123() {
+  return (
+    <View>
+      <Text>Hiiiiwwwwwwwwwwwwwwwwww</Text>
+    </View>
+  )
+}
+
+// function AppContent() {
+//   const safeAreaInsets = useSafeAreaInsets();
+
 //   return (
 //     <View style={styles.container}>
-//       <Text>Hiiii</Text>
+//       <NewAppScreen
+//         templateFileName="App.tsx"
+//         safeAreaInsets={safeAreaInsets}
+//       />
 //     </View>
-//   )
+//   );
 // }
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });
 
 export default App;
