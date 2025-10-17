@@ -222,6 +222,7 @@ export default function LoginScreen({ navigation }) {
               <Text style={styles.label}>Email</Text>
               <TextInput
                 placeholder="you@example.com"
+                placeholderTextColor="#999"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -237,6 +238,7 @@ export default function LoginScreen({ navigation }) {
               <Text style={styles.label}>Password</Text>
               <TextInput
                 placeholder="Enter your password"
+                placeholderTextColor="#999"
                 secureTextEntry
                 autoCapitalize="none"
                 style={styles.input}
@@ -257,7 +259,9 @@ export default function LoginScreen({ navigation }) {
           </>
         )}
       </Formik>
-
+      <TouchableOpacity onPress={() => navigation.navigate('register')}>
+        <Text style={styles.loginText}>Already have an account? Login</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -285,6 +289,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 44,
+    color:'#2e2e2e',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
@@ -312,4 +317,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
+  loginText: { marginTop: 20, color: '#4a90e2', textDecorationLine: 'underline' },
 });

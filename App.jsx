@@ -38,7 +38,7 @@ const Stack = createNativeStackNavigator();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [base, setbase] = useState('home')
+  const [base, setbase] = useState(null)
 
   useEffect(() => {
     if (app) {
@@ -61,8 +61,9 @@ function App() {
     const checkLogin = async () => {
       try {
         const user = await AsyncStorage.getItem('user');
-        console.log(user)
+        console.log("user", user)
         if (user) {
+          console.log("home")
           setbase('home');
         } else {
           setbase('login');
@@ -96,23 +97,25 @@ function App() {
     //     <Test123 />
     //   </SafeAreaProvider>
     // </>
-    <>
+    <>{
+      base &&
       <NavigationContainer>
         <Stack.Navigator initialRouteName={base}>
           <Stack.Screen
             name="login"
             component={LoginScreen}
           />
-          {/* <Stack.Screen
+          <Stack.Screen
           name="register"
           component={RegisterScreen}
-          /> */}
+          />
           <Stack.Screen name="home" component={AppTabs} />
 
 
           {/* <Stack.Screen name="AddExpense" component={AddExpenseScreen} /> */}
         </Stack.Navigator>
       </NavigationContainer>
+    }
       <Toast />
     </>
   );
