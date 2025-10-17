@@ -1,21 +1,77 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { showToastError } from '../common/ToastHelper';
+import { doc, getDoc } from 'firebase/firestore';
+import { useContext } from 'react';
+import { AppContext } from '../config/AppContext';
+
+const { sharedObject } = useContext(AppContext);
 
 export default function TransactionList() {
   const [transactions, setTransactions] = useState([
-    { id: '1', title: 'Salary', amount: 5000, type: 'income', category : "food" },
-    { id: '2', title: 'Groceries', amount: 800, type: 'expense', category : "travel" },
-    { id: '3', title: 'Freelance', amount: 2000, type: 'income', category : "other" },
-    { id: '4', title: 'Electricity Bill', amount: 150, type: 'expense', category : "recharge" },
+    {
+      id: '1',
+      title: 'Salary',
+      amount: 5000,
+      type: 'income',
+      category: 'food',
+    },
+    {
+      id: '2',
+      title: 'Groceries',
+      amount: 800,
+      type: 'expense',
+      category: 'travel',
+    },
+    {
+      id: '3',
+      title: 'Freelance',
+      amount: 2000,
+      type: 'income',
+      category: 'other',
+    },
+    {
+      id: '4',
+      title: 'Electricity Bill',
+      amount: 150,
+      type: 'expense',
+      category: 'recharge',
+    },
   ]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    try {
+      const docRef = doc(db, 'EIDB', sharedObject);
+      const data = await getDoc(docRef);
+      if (data.success || data.exists()) {
+        setTransactions(prev => [
+          ...prev,
+          ...data.map(d => d?.data), 
+        ]);
+      }
+    } catch (err) {
+      showToastError('Error occured!', 'Try again later.');
+      console.log('error while fetching ', err);
+    }
+  }
 
   const renderItem = ({ item, index }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.index}>{index + 1}.</Text>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{item.title}</Text>
-        <Text style={[styles.amount, item.type === 'income' ? styles.income : styles.expense]}>
-          {item.type === 'income' ? '+' : '-'}{item.amount}
+        <Text
+          style={[
+            styles.amount,
+            item.type === 'income' ? styles.income : styles.expense,
+          ]}
+        >
+          {item.type === 'income' ? '+' : '-'}
+          {item.amount}
         </Text>
       </View>
     </View>
@@ -24,7 +80,7 @@ export default function TransactionList() {
   return (
     <FlatList
       data={transactions}
-      keyExtractor={(item) => item.id}
+      keyExtractor={item => item.id}
       renderItem={renderItem}
       contentContainerStyle={{ paddingBottom: 100 }}
     />

@@ -11,6 +11,16 @@ import {
   TextInput,
 } from 'react-native';
 import { styles } from './Styles.js'; // 👈 external style import
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../config/firebase.js';
+import {
+  showToastError,
+  showToastFailure,
+  showToastSuccess,
+} from '../common/ToastHelper.js';
+import { AppContext } from '../config/AppContext.js';
+
+const { sharedObject, setSharedObject } = useContext(AppContext);
 
 function ExpenseCircle() {
   return (
@@ -69,14 +79,36 @@ const renderItem = ({ item }) => (
   </View>
 );
 
-// const TransactionSchema = Yup.object().shape({
-//   title: Yup.string().required('Title is required'),
-//   amount: Yup.number()
-//     .typeError('Amount must be a number')
-//     .positive('Amount must be positive')
-//     .required('Amount is required'),
-//   type: Yup.string().oneOf(['income', 'expense']).required(),
-// });
+const TransactionSchema = Yup.object().shape({
+  title: Yup.string().required('Title is required'),
+  category: Yup.string().required('Category is required'),
+  amount: Yup.number()
+    .typeError('Amount must be a number')
+    .positive('Amount must be positive')
+    .required('Amount is required'),
+  type: Yup.string().oneOf(['income', 'expense']).required(),
+});
+
+const handleSubmit = async values => {
+  try {
+    if (!sharedObject?.user?.id) {
+      showToastError("Log in again!")
+      console.log("at home.jsx")
+      return
+    }
+    const res = await addDoc(collection(db, 'EIDB', sharedObject?.user?.id), {
+      ...values,
+    });
+    if (res.success) {
+      showToastSuccess(`${values?.type} is added`, '');
+    } else {
+      showToastFailure('something went wrong!', 'Try after some time.');
+    }
+  } catch (err) {
+    showToastError('Err');
+    console.log(err);
+  }
+};
 
 export default function Test123() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -137,12 +169,17 @@ export default function Test123() {
         </TouchableOpacity>
       </View>
 
-      {/* <Modal
+      <Modal
         visible={modalVisible}
         animationType="slide"
         transparent={true}
         onRequestClose={() => setModalVisible(false)}
       >
+        <Formik
+          initialValues={{ email: '', password: '' }}
+          validationSchema={TransactionSchema}
+          onSubmit={handleSubmit}
+        ></Formik>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Add Transaction</Text>
@@ -153,6 +190,12 @@ export default function Test123() {
               onChangeText={setTitle}
               style={styles.input}
             />
+            <Picker selectedValue={category} onValueChange={setCategory}>
+              <Picker.Item label="Java" value="java" />
+              <Picker.Item label="JavaScript" value="js" />
+              <Picker.Item label="Python" value="python" />
+            </Picker>
+            <Text>Selected: {category}</Text>
             <TextInput
               placeholder="Amount"
               value={amount}
@@ -161,7 +204,6 @@ export default function Test123() {
               style={styles.input}
             />
 
-          
             <View style={styles.typeContainer}>
               <TouchableOpacity
                 style={[
@@ -199,7 +241,7 @@ export default function Test123() {
             </View>
           </View>
         </View>
-      </Modal> */}
+      </Modal>
     </View>
   );
 }

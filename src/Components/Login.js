@@ -159,14 +159,25 @@
 // }
 
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { auth } from '../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { showToastError, showToastFailure, showToastSuccess } from '../common/ToastHelper';
-
+import {
+  showToastError,
+  showToastFailure,
+  showToastSuccess,
+} from '../common/ToastHelper';
+import { setAsyncItem } from '../common/AsyncStorage';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -177,35 +188,38 @@ const LoginSchema = Yup.object().shape({
 
 export default function LoginScreen({ navigation }) {
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    authTest(values?.email, values?.password)
-    setSubmitting(false)
-    showToastFailure()
-
+    authTest(values?.email, values?.password);
+    setSubmitting(false);
+    showToastFailure();
   };
 
   const authTest = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       const user = userCredential?.user;
 
       if (user) {
-        await AsyncStorage.setItem(
-          'user',
-          JSON.stringify({ uid: user.uid, email: user.email })
-        );
+        // await AsyncStorage.setItem('user', JSON.stringify());
+        setAsyncItem('user', {
+          uid: user.uid,
+          email: user.email,
+        });
         showToastSuccess('Logged In', 'Welcome back!');
         console.log('user logged in!', userCredential);
-        navigation.navigate("home")
+        navigation.navigate('home');
       } else {
         showToastFailure('Login Failed', 'Invalid credentials');
       }
     } catch (err) {
       console.error(err);
-      showToastError()
+      showToastError();
       throw err; // propagate error so handleSubmit can catch
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -216,7 +230,15 @@ export default function LoginScreen({ navigation }) {
         validationSchema={LoginSchema}
         onSubmit={handleSubmit}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          isSubmitting,
+        }) => (
           <>
             <View style={styles.field}>
               <Text style={styles.label}>Email</Text>
@@ -231,7 +253,9 @@ export default function LoginScreen({ navigation }) {
                 onBlur={handleBlur('email')}
                 value={values.email}
               />
-              {touched.email && errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
+              {touched.email && errors.email ? (
+                <Text style={styles.error}>{errors.email}</Text>
+              ) : null}
             </View>
 
             <View style={styles.field}>
@@ -246,15 +270,23 @@ export default function LoginScreen({ navigation }) {
                 onBlur={handleBlur('password')}
                 value={values.password}
               />
-              {touched.password && errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
+              {touched.password && errors.password ? (
+                <Text style={styles.error}>{errors.password}</Text>
+              ) : null}
             </View>
 
             <TouchableOpacity
-              style={[styles.button, (isSubmitting || Object.keys(errors).length > 0) && styles.buttonDisabled]}
+              style={[
+                styles.button,
+                (isSubmitting || Object.keys(errors).length > 0) &&
+                  styles.buttonDisabled,
+              ]}
               onPress={handleSubmit}
               disabled={isSubmitting || Object.keys(errors).length > 0}
             >
-              <Text style={styles.buttonText}>{isSubmitting ? 'Signing in...' : 'Sign in'}</Text>
+              <Text style={styles.buttonText}>
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
+              </Text>
             </TouchableOpacity>
           </>
         )}
@@ -289,7 +321,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 44,
-    color:'#2e2e2e',
+    color: '#2e2e2e',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
@@ -317,5 +349,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
-  loginText: { marginTop: 20, color: '#4a90e2', textDecorationLine: 'underline' },
+  loginText: {
+    marginTop: 20,
+    color: '#4a90e2',
+    textDecorationLine: 'underline',
+  },
 });

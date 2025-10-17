@@ -33,6 +33,7 @@ import LoginScreen from './src/Components/Login.js';
 import RegisterScreen from './src/Components/RegisterScreen.js';
 import AppTabs from './src/Components/AppTabs.js';
 import Toast from 'react-native-toast-message';
+import { AppProvider } from './src/config/AppContext.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -97,7 +98,7 @@ function App() {
     //     <Test123 />
     //   </SafeAreaProvider>
     // </>
-    <>{
+    <AppProvider>{
       base &&
       <NavigationContainer>
         <Stack.Navigator initialRouteName={base}>
@@ -117,7 +118,7 @@ function App() {
       </NavigationContainer>
     }
       <Toast />
-    </>
+    </AppProvider>
   );
 }
 
